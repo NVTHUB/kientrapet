@@ -1,0 +1,62 @@
+    task.wait(15)
+local RS = game:GetService("ReplicatedStorage")
+local player = game.Players.LocalPlayer
+
+-- Load module dữ liệu (giống script cũ của bạn)
+local ClientData = require(RS:FindFirstChild("ClientData", true))
+
+-- Cấu hình
+local TARGET_PET_KIND = "sugarfest_2026_easter_bunny"
+local CHECK_INTERVAL = 30 -- giây
+
+local function CheckPetAndTrigger()
+    -- Lấy dữ liệu inventory mới nhất
+    local allData = ClientData.get_data()
+    local data = allData and allData[player.Name]
+    
+    if not data or not data.inventory or not data.inventory.pets then 
+        return 
+    end
+
+    local isFound = false
+
+    -- Quét danh sách Pet
+    for _, petEntry in pairs(data.inventory.pets) do
+        if petEntry.kind == TARGET_PET_KIND then
+            isFound = true
+            break -- Tìm thấy rồi thì dừng vòng lặp
+        end
+    end
+
+    -- Nếu tìm thấy thì thực thi lệnh
+    if isFound then
+        print("Đã tìm thấy " .. TARGET_PET_KIND .. "! Đang thực hiện chuyển folder...")
+        
+        local success, result = pcall(function()
+            -- Lệnh bạn yêu cầu
+            return getgenv().client:ChangeToFolder(
+                "c58bdca7e0796dd403e737cbbac1daa340e25fbea26bcfb6f1498a236ff6f2c6",
+                "ec1c91ca95dfe5ba8e1822ead27234d1688350d31324e8c4d3c0d7dc18c13d5a",
+                false,
+                nil
+            )
+        end)
+
+        if success then
+            print("Thực thi ChangeToFolder thành công.")
+        else
+            warn("Lỗi khi thực thi ChangeToFolder: ", result)
+        end
+    else
+        -- print("Không tìm thấy pet mục tiêu, sẽ kiểm tra lại sau 30s.")
+    end
+end
+
+-- Chạy vòng lặp kiểm tra
+task.spawn(function()
+    print("Hệ thống kiểm tra Pet Easter Bunny đã bắt đầu.")
+    while true do
+        CheckPetAndTrigger()
+        task.wait(CHECK_INTERVAL)
+    end
+end)
