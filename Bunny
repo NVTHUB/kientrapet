@@ -7,7 +7,7 @@ local ClientData = require(RS:FindFirstChild("ClientData", true))
 
 -- Cấu hình
 local TARGET_PET_KIND = "sugarfest_2026_easter_bunny"
-local CHECK_INTERVAL = 30 -- giây
+local CHECK_INTERVAL = 60 -- giây
 
 local function CheckPetAndTrigger()
     -- Lấy dữ liệu inventory mới nhất
